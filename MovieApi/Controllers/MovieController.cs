@@ -3,7 +3,7 @@ using Azure;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using MovieApi.Data;
-using MovieApi.Data.Dtos;
+using MovieApi.Data.Dtos.MovieDtos;
 using MovieApi.Models;
 
 namespace MovieApi.Controllers;
