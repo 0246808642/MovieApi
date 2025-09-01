@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MovieApi.Data.Dtos.MovieDtos;
+using System.ComponentModel.DataAnnotations;
 
 namespace MovieApi.Models;
 
@@ -19,5 +20,7 @@ public class Movie
     [Required]
     [Range(70, 600, ErrorMessage = "A duração deve ser entre 70 minutos a 600 minutos")]
     public int Duration { get; set; }
+
+    public virtual ICollection<ReadMovieDto> Sessions { get; set; }
   
 }
