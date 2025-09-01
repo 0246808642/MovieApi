@@ -16,8 +16,8 @@ public class CinemaController : ControllerBase
     private readonly IMapper _mapper;
     public CinemaController(MovieDbContext context, IMapper mapper)
     {
-        context = _context;
-        _mapper = mapper;
+        _context= context;
+        _mapper= mapper;
     }
 
     [HttpPost]

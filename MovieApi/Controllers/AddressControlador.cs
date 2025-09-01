@@ -18,8 +18,8 @@ namespace MovieApi.Controllers
 
         public AddressControlador(MovieDbContext context, IMapper mapper)
         {
-            context = _context;
-            mapper = _mapper;
+            _context = context;
+            _mapper = mapper;
         }
 
         [HttpGet()]
