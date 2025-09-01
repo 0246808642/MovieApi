@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Azure;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -33,7 +32,7 @@ public class CinemaController : ControllerBase
         }
         catch (Exception)
         {
-            return BadRequest("Error, por favor tente mais tarde");
+            return StatusCode(500, "Internal server error");
         }
 
     }
@@ -52,7 +51,7 @@ public class CinemaController : ControllerBase
         catch
         (Exception)
         {
-            return BadRequest("Error, por favor tente mais tarde");
+            return StatusCode(500, "Internal server error");
         }
 
     }
@@ -70,7 +69,7 @@ public class CinemaController : ControllerBase
         }
         catch (Exception)
         {
-            return BadRequest("Error, por favor tente mais tarde");
+            return StatusCode(500, "Internal server error");
         }
     }
 
@@ -88,9 +87,9 @@ public class CinemaController : ControllerBase
         }
         catch (Exception)
         {
-            return BadRequest("Error, por favor tente mais tarde");
-        }   
-
+            return StatusCode(500, "Internal server error");
+        }
+    }
     [HttpPatch("{id}")]
     public async Task<IActionResult> PatchCinema(int id, JsonPatchDocument<UpdateCinemaDto> patch)
     {
@@ -109,7 +108,7 @@ public class CinemaController : ControllerBase
         }
         catch (Exception)
         {
-            return BadRequest("Error, por favor tente mais tarde");
+            return StatusCode(500, "Internal server error");
         }
     }
 
@@ -126,7 +125,8 @@ public class CinemaController : ControllerBase
         }
         catch (Exception)
         {
-            return BadRequest("Error, por favor tente mais tarde");
+            return StatusCode(500, "Internal server error");
         }
     }
+
 }
