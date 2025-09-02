@@ -32,10 +32,10 @@ namespace MovieApi.Controllers
             return Ok(sessionDtos);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetId(int id)
+        [HttpGet("{movieId}/{cinemaId}")]
+        public async Task<IActionResult> GetId(int movieId, int cinemaId)
         {
-            var session = await _context.Sessions.FindAsync(id);
+            var session = await _context.Sessions.FirstOrDefaultAsync(x=>x.MovieId == movieId && x.CinemaId == cinemaId);
             if (session == null) return NotFound("Sessão não encontrada.");
             var sessionDto = _mapper.Map<ReadSessionDto>(session);
             return Ok(sessionDto);
@@ -47,7 +47,7 @@ namespace MovieApi.Controllers
             var session = _mapper.Map<Session>(create);
             await _context.Sessions.AddAsync(session);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetId), new { id = session.Id }, session);
+            return CreatedAtAction(nameof(GetId), new { movieId = session.MovieId , cinemaId = session.CinemaId }, session);
         }
 
    

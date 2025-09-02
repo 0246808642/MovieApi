@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MovieApi.Data;
 
@@ -11,9 +12,11 @@ using MovieApi.Data;
 namespace MovieApi.Migrations
 {
     [DbContext(typeof(MovieDbContext))]
-    partial class MovieDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250902164851_FilmeId nulo")]
+    partial class FilmeIdnulo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,6 +27,59 @@ namespace MovieApi.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("MovieApi.Data.Dtos.MovieDtos.ReadMovieDto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Duration")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Genre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("HourConsult")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("MovieId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MovieId");
+
+                    b.ToTable("ReadMovieDto");
+                });
+
+            modelBuilder.Entity("MovieApi.Data.Dtos.SessionDtos.ReadSessionDto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ReadMovieDtoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReadMovieDtoId");
+
+                    b.ToTable("ReadSessionDto");
+                });
 
             modelBuilder.Entity("MovieApi.Models.Address", b =>
                 {
@@ -98,17 +154,39 @@ namespace MovieApi.Migrations
 
             modelBuilder.Entity("MovieApi.Models.Session", b =>
                 {
-                    b.Property<int?>("MovieId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("CinemaId")
                         .HasColumnType("int");
 
-                    b.HasKey("MovieId", "CinemaId");
+                    b.Property<int?>("MovieId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("CinemaId");
 
+                    b.HasIndex("MovieId");
+
                     b.ToTable("Sessions");
+                });
+
+            modelBuilder.Entity("MovieApi.Data.Dtos.MovieDtos.ReadMovieDto", b =>
+                {
+                    b.HasOne("MovieApi.Models.Movie", null)
+                        .WithMany("Sessions")
+                        .HasForeignKey("MovieId");
+                });
+
+            modelBuilder.Entity("MovieApi.Data.Dtos.SessionDtos.ReadSessionDto", b =>
+                {
+                    b.HasOne("MovieApi.Data.Dtos.MovieDtos.ReadMovieDto", null)
+                        .WithMany("SessionsDto")
+                        .HasForeignKey("ReadMovieDtoId");
                 });
 
             modelBuilder.Entity("MovieApi.Models.Cinema", b =>
@@ -126,19 +204,20 @@ namespace MovieApi.Migrations
                 {
                     b.HasOne("MovieApi.Models.Cinema", "Cinema")
                         .WithMany("Sessions")
-                        .HasForeignKey("CinemaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CinemaId");
 
                     b.HasOne("MovieApi.Models.Movie", "Movie")
-                        .WithMany("Sessions")
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("MovieId");
 
                     b.Navigation("Cinema");
 
                     b.Navigation("Movie");
+                });
+
+            modelBuilder.Entity("MovieApi.Data.Dtos.MovieDtos.ReadMovieDto", b =>
+                {
+                    b.Navigation("SessionsDto");
                 });
 
             modelBuilder.Entity("MovieApi.Models.Address", b =>

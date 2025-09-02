@@ -11,6 +11,6 @@ public class ReadMovieDto
     public string Genre { get; set; }
     public int Duration { get; set; }
     public DateTime HourConsult { get; set; } = DateTime.Now;
-    public ICollection<ReadSessionDto> SessionsDto { get; set; }
+    public virtual ICollection<ReadSessionDto> SessionsDto { get; set; }
 
 }
