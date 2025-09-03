@@ -57,15 +57,17 @@ public class CinemaController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetCinema(int skip = 0, int take = 10)
+    public async Task<IActionResult> GetCinema([FromQuery] int? addressId = null,int skip = 0, int take = 10)
     {
         try
         {
-            var cinemas = await _context.Cinemas.ToListAsync();
-            if (cinemas == null) return NotFound("Nenhum cinema encontrado");
-
-            var cinemaDtos = _mapper.Map<List<ReadCinemaDto>>(cinemas);
-            return Ok(cinemaDtos);
+            if(addressId == null)
+            {
+                _mapper.Map<List<ReadCinemaDto>>(_context.Cinemas.Skip(skip).Take(take).ToListAsync());
+                return Ok();
+            }
+             _mapper.Map<List<ReadCinemaDto>>(_context.Cinemas.FromSqlRaw($"SELECT Id, Name, AddressId FROM Cinemas WHERE Cinemas.AddressId = {addressId}").ToListAsync());
+            return Ok();
         }
         catch (Exception)
         {

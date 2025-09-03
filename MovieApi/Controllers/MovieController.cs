@@ -2,6 +2,7 @@
 using Azure;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MovieApi.Data;
 using MovieApi.Data.Dtos.MovieDtos;
 using MovieApi.Models;
@@ -22,19 +23,25 @@ public class MovieController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult AddMovie([FromBody]CreateMovieDto movieDto)
+    public IActionResult AddMovie([FromBody] CreateMovieDto movieDto)
     {
         Movie movie = _mapper.Map<Movie>(movieDto);
         _context.Movies.Add(movie);
         _context.SaveChanges();
         return CreatedAtAction(nameof(GetId), new { id = movie.Id }, movie);
-      
+
     }
 
     [HttpGet]
-    public IEnumerable<ReadMovieDto> ListMovies(int skip = 0, int take = 10)
+    public async Task<IActionResult> ListMovies(int skip = 0, int take = 10, [FromQuery] string? NameCinema = null)
     {
-        return _mapper.Map<List<ReadMovieDto>>(_context.Movies.Skip(skip).Take(take));
+        if (NameCinema == null)
+        {
+           var name = _mapper.Map<List<ReadMovieDto>>(_context.Movies.Skip(skip).Take(take).ToList());
+            return Ok(name);
+        }
+        var names =_mapper.Map<List<ReadMovieDto>>(_context.Movies.Skip(skip).Take(take).Where(x=>x.Sessions.Any(x=>x.Cinema.Name == NameCinema)).ToListAsync());
+        return Ok(names);
     }
 
     [HttpGet("{id}")]
